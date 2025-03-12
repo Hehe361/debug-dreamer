@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
@@ -10,6 +9,7 @@ import { Play, Bug, Save, RotateCcw, ChevronRight, ChevronLeft } from "lucide-re
 import Editor from "@/components/Editor";
 import TestCases from "@/components/TestCases";
 import ProblemDescription from "@/components/ProblemDescription";
+import { CodeDebugger } from "@/components/CodeDebugger";
 
 const CodeEditor = () => {
   const { problemId } = useParams();
@@ -18,6 +18,7 @@ const CodeEditor = () => {
   const [output, setOutput] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [showProblem, setShowProblem] = useState(true);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
 
   const handleRunCode = async () => {
     setIsRunning(true);
@@ -101,31 +102,33 @@ const CodeEditor = () => {
               <ProblemDescription />
             </ResizablePanel>
           )}
-          <ResizablePanel defaultSize={showProblem ? 45 : 60}>
-            <Editor code={code} setCode={setCode} />
-          </ResizablePanel>
-          <ResizablePanel defaultSize={30} minSize={25}>
-            <div className="h-full flex flex-col">
-              <div className="flex-1">
-                <ScrollArea className="h-full">
-                  <div className="p-4 space-y-4">
-                    <h2 className="font-semibold">Test Cases</h2>
-                    <TestCases />
-                  </div>
-                </ScrollArea>
-              </div>
-              <Separator />
-              <div className="flex-1">
-                <ScrollArea className="h-full">
-                  <div className="p-4 space-y-4">
-                    <h2 className="font-semibold">Output</h2>
-                    <pre className="font-mono text-sm p-4 rounded-lg bg-muted whitespace-pre-wrap">
-                      {output || "Run your code to see the output..."}
-                    </pre>
-                  </div>
-                </ScrollArea>
-              </div>
-            </div>
+          <ResizablePanel defaultSize={showProblem ? 75 : 100}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={60}>
+                <div className="h-full relative">
+                  <Editor code={code} setCode={setCode} onDebug={setDebugInfo} />
+                  <CodeDebugger suggestions={debugInfo} />
+                </div>
+              </ResizablePanel>
+              <ResizablePanel defaultSize={40}>
+                <div className="h-full grid grid-cols-2 divide-x">
+                  <ScrollArea className="h-full">
+                    <div className="p-4 space-y-4">
+                      <h2 className="font-semibold">Test Cases</h2>
+                      <TestCases />
+                    </div>
+                  </ScrollArea>
+                  <ScrollArea className="h-full">
+                    <div className="p-4 space-y-4">
+                      <h2 className="font-semibold">Output</h2>
+                      <pre className="font-mono text-sm p-4 rounded-lg bg-muted whitespace-pre-wrap">
+                        {output || "Run your code to see the output..."}
+                      </pre>
+                    </div>
+                  </ScrollArea>
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>
