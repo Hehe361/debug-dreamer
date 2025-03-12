@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -98,19 +99,23 @@ const CodeEditor = () => {
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup direction="horizontal">
           {showProblem && (
-            <ResizablePanel defaultSize={25} minSize={20}>
-              <ProblemDescription />
-            </ResizablePanel>
+            <>
+              <ResizablePanel defaultSize={30} minSize={20}>
+                <ProblemDescription />
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+            </>
           )}
-          <ResizablePanel defaultSize={showProblem ? 75 : 100}>
+          <ResizablePanel defaultSize={showProblem ? 70 : 100}>
             <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={60}>
+              <ResizablePanel defaultSize={60} minSize={30}>
                 <div className="h-full relative">
                   <Editor code={code} setCode={setCode} onDebug={setDebugInfo} />
                   <CodeDebugger suggestions={debugInfo} />
                 </div>
               </ResizablePanel>
-              <ResizablePanel defaultSize={40}>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={40} minSize={20}>
                 <div className="h-full grid grid-cols-2 divide-x">
                   <ScrollArea className="h-full">
                     <div className="p-4 space-y-4">
