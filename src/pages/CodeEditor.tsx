@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Play, Bug, Save, RotateCcw, ChevronRight, ChevronLeft } from "lucide-react";
@@ -11,6 +10,7 @@ import Editor from "@/components/Editor";
 import TestCases from "@/components/TestCases";
 import ProblemDescription from "@/components/ProblemDescription";
 import { CodeDebugger } from "@/components/CodeDebugger";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const CodeEditor = () => {
   const { problemId } = useParams();
@@ -56,6 +56,7 @@ const CodeEditor = () => {
           </Button>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Button
             variant="outline"
             onClick={() => setCode("")}
