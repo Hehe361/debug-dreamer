@@ -1,16 +1,31 @@
 
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Bug, Save, RotateCcw, ChevronRight, ChevronLeft } from "lucide-react";
+import { Play, Bug, Save, RotateCcw, ChevronRight, ChevronLeft, ArrowLeft } from "lucide-react";
 import Editor from "@/components/Editor";
 import TestCases from "@/components/TestCases";
 import ProblemDescription from "@/components/ProblemDescription";
 import { CodeDebugger } from "@/components/CodeDebugger";
 import { ThemeToggle } from "@/components/ThemeToggle";
+
+// Define a simple problem lookup object to simulate fetching problem details
+const problemTitles: Record<string, string> = {
+  "two-sum": "Two Sum",
+  "add-two-numbers": "Add Two Numbers",
+  "longest-substring": "Longest Substring Without Repeating Characters"
+};
+
+// Add titles for the problem-X format
+Array(20).fill(null).forEach((_, i) => {
+  const index = i + 1;
+  const problemType = ['Two Sum', 'Merge Intervals', 'LRU Cache', 'Validate BST', 'Max Path Sum'][i % 5];
+  const number = Math.floor(i/5) + 1;
+  problemTitles[`problem-${index}`] = `Problem ${index}: ${problemType} ${number}`;
+});
 
 const CodeEditor = () => {
   const { problemId } = useParams();
@@ -20,6 +35,14 @@ const CodeEditor = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [showProblem, setShowProblem] = useState(true);
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const [problemTitle, setProblemTitle] = useState("");
+
+  // Set the problem title based on the problemId
+  useEffect(() => {
+    if (problemId) {
+      setProblemTitle(problemTitles[problemId] || `Problem ${problemId}`);
+    }
+  }, [problemId]);
 
   const handleRunCode = async () => {
     setIsRunning(true);
@@ -46,7 +69,12 @@ const CodeEditor = () => {
     <div className="h-screen bg-background flex flex-col">
       <header className="border-b p-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-semibold">Problem {problemId}</h1>
+          <Link to="/problems">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <h1 className="text-xl font-semibold">{problemTitle}</h1>
           <Button
             variant="ghost"
             size="icon"
@@ -102,7 +130,7 @@ const CodeEditor = () => {
           {showProblem && (
             <>
               <ResizablePanel defaultSize={30} minSize={20}>
-                <ProblemDescription />
+                <ProblemDescription problemId={problemId} />
               </ResizablePanel>
               <ResizableHandle withHandle />
             </>
@@ -121,7 +149,7 @@ const CodeEditor = () => {
                   <ScrollArea className="h-full">
                     <div className="p-4 space-y-4">
                       <h2 className="font-semibold">Test Cases</h2>
-                      <TestCases />
+                      <TestCases problemId={problemId} />
                     </div>
                   </ScrollArea>
                   <ScrollArea className="h-full">

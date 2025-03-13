@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import Navbar from '@/components/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +15,7 @@ import {
   ArrowUpDown,
   X,
   ChevronDown,
-  ChevronUp,
-  Code
+  ChevronUp
 } from 'lucide-react';
 import {
   Select,
@@ -43,7 +42,6 @@ import {
   CardHeader 
 } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 // Types
 type Difficulty = 'easy' | 'medium' | 'hard' | 'all';
