@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Code, Star, Clock, Award } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -62,9 +64,12 @@ const Index = () => {
             <h1 className="text-2xl font-bold">Debug Dreamer</h1>
           </div>
           <nav className="flex items-center gap-4">
-            <Button variant="ghost">Problems</Button>
+            <Link to="/problems">
+              <Button variant="ghost">Problems</Button>
+            </Link>
             <Button variant="ghost">Contests</Button>
             <Button variant="ghost">Leaderboard</Button>
+            <ThemeToggle />
             <Button variant="outline">Sign In</Button>
           </nav>
         </div>
@@ -116,6 +121,14 @@ const Index = () => {
               </CardFooter>
             </Card>
           ))}
+        </div>
+        
+        <div className="mt-10 text-center">
+          <Link to="/problems">
+            <Button size="lg">
+              Browse All Problems
+            </Button>
+          </Link>
         </div>
       </main>
       

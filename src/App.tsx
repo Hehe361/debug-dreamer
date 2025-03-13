@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import Index from "./pages/Index";
 import CodeEditor from "./pages/CodeEditor";
 import NotFound from "./pages/NotFound";
+import Problems from "./pages/Problems";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/problems" element={<Problems />} />
             <Route path="/editor/:problemId" element={<CodeEditor />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
