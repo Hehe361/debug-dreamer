@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Play, Plus, Save, X } from "lucide-react";
+import { Play, Plus, X } from "lucide-react";
 import { 
   Dialog,
   DialogContent,
@@ -11,9 +11,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 
 // Default test cases for different problem types
 const defaultTestCases = {
@@ -84,25 +86,31 @@ type TestCase = {
   active: boolean;
 };
 
-type TestCaseFormValues = {
-  input: string;
-  expected: string;
-};
+// Create a schema for form validation
+const testCaseSchema = z.object({
+  input: z.string().min(1, "Input is required"),
+  expected: z.string().min(1, "Expected output is required"),
+});
+
+type TestCaseFormValues = z.infer<typeof testCaseSchema>;
 
 const TestCases = ({ problemId = "two-sum" }: TestCasesProps) => {
   const { toast } = useToast();
-  const form = useForm<TestCaseFormValues>({
-    defaultValues: {
-      input: "",
-      expected: ""
-    }
-  });
-
+  
   const [testCases, setTestCases] = useState<TestCase[]>(
     defaultTestCases[problemId as keyof typeof defaultTestCases] || defaultTestCases["two-sum"]
   );
   const [activeTab, setActiveTab] = useState(testCases[0]?.id || "1");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Initialize form with proper resolver and default values
+  const form = useForm<TestCaseFormValues>({
+    resolver: zodResolver(testCaseSchema),
+    defaultValues: {
+      input: "",
+      expected: ""
+    }
+  });
 
   const handleAddTestCase = (data: TestCaseFormValues) => {
     const newId = (testCases.length + 1).toString();
@@ -181,8 +189,9 @@ const TestCases = ({ problemId = "two-sum" }: TestCasesProps) => {
           <DialogHeader>
             <DialogTitle>Add New Test Case</DialogTitle>
           </DialogHeader>
-          <form onSubmit={form.handleSubmit(handleAddTestCase)}>
-            <div className="space-y-4 py-4">
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleAddTestCase)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="input"
@@ -193,12 +202,12 @@ const TestCases = ({ problemId = "two-sum" }: TestCasesProps) => {
                       <Input 
                         placeholder="E.g., nums = [1,2,3], target = 5" 
                         {...field} 
-                        required
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
+              
               <FormField
                 control={form.control}
                 name="expected"
@@ -209,20 +218,20 @@ const TestCases = ({ problemId = "two-sum" }: TestCasesProps) => {
                       <Input 
                         placeholder="E.g., [0,2]" 
                         {...field} 
-                        required
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
-            </div>
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Add Test Case</Button>
-            </DialogFooter>
-          </form>
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Add Test Case</Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>
